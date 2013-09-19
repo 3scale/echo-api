@@ -4,6 +4,7 @@ GEM
     daemons (1.1.9)
     eventmachine (1.0.3)
     json (1.8.0)
+    newrelic_rpm (3.6.7.152)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -24,6 +25,7 @@ PLATFORMS
 
 DEPENDENCIES
   json
+  newrelic_rpm
   shotgun
   sinatra
   thin
