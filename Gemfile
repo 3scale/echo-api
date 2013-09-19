@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+gem 'sinatra'
+gem 'thin'
+gem 'shotgun'
+gem 'httpclient'
+gem 'json'
+gem 'pry'
+gem 'pry-debugger'
