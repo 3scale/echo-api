@@ -11,12 +11,17 @@ def all_methods(path, opts = {}, &block)
   head(path, opts, &block)
 end
 
+def get_headers
+  env.select {|k, v| k.start_with? 'HTTP_'}
+end
+
 all_methods "/**" do
   r = request.body.rewind
   return {
     method: request.request_method,
     path: request.path,
     args: request.query_string,
-    body: request.body.read
+    body: request.body.read,
+    headers: get_headers()
   }.to_json
 end
