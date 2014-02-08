@@ -7,6 +7,8 @@ require 'async-rack'
 require 'sinatra/async'
 register Sinatra::Async
 
+require 'newrelic_rpm'
+
 enable :logging
 
 def all_methods(path, opts = {}, &block)
