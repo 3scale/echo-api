@@ -3,7 +3,6 @@
 require 'sinatra'
 require "json"
 
-require 'async-rack'
 require 'sinatra/async'
 register Sinatra::Async
 
