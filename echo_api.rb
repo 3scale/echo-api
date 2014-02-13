@@ -3,16 +3,15 @@
 require 'sinatra'
 require "json"
 
-require 'sinatra/async'
-register Sinatra::Async
-
 require 'newrelic_rpm'
 
 enable :logging
 
+configure { set :server, :puma }
+
 def all_methods(path, opts = {}, &block)
-  aget(path, opts, &block)
-  apost(path, opts, &block)
+  get(path, opts, &block)
+  post(path, opts, &block)
   put(path, opts, &block)
   delete(path, opts, &block)
   patch(path, opts, &block)
@@ -26,13 +25,12 @@ end
 
 all_methods "/**" do
   r = request.body.rewind
-  res = {
+
+  return {
     method: request.request_method,
     path: request.path,
     args: request.query_string,
     body: request.body.read,
     headers: get_headers()
   }.to_json
-
-  body(res)
 end
