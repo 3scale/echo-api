@@ -60,7 +60,7 @@ get '/size/:size' do |original_size|
   send_file random_file(original_size,  * multiplier)
 end
 
-DOT = ".\n".freeze
+DOT = ".\n"
 
 INCREMENTS = 100
 
