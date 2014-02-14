@@ -7,9 +7,11 @@ require 'newrelic_rpm'
 
 enable :logging
 
-configure { set :server, :puma }
-
-require 'securerandom'
+configure do
+  set :server, :puma
+  set :public_folder, 'tmp'
+  enable :static
+end
 
 def all_methods(path, opts = {}, &block)
   get(path, opts, &block)
@@ -26,10 +28,25 @@ def get_headers
 end
 
 @@random = Random.new
-@@random_files = Hash.new{|hash,size| hash[size] = @@random.bytes(size) }
 
-get '/size/:size' do |size|
-  size, unit = size.scan(/\d+|\D+/)
+def random_file(name, size)
+  path = Pathname.new('tmp').join('size', name)
+
+  return path if path.exist?
+
+  content = @@random.bytes(size)
+  path.dirname.mkpath
+
+  path.open('w') do |f|
+    f << content
+  end
+
+  path
+end
+
+
+get '/size/:size' do |original_size|
+  size, unit = original_size.scan(/\d+|\D+/)
 
   size = Integer(size)
   unit = String(unit).downcase
@@ -40,10 +57,8 @@ get '/size/:size' do |size|
                  else 1
                end
 
-  content_type 'application/octet-stream'
-  body @@random_files[size * multiplier]
+  send_file random_file(original_size,  * multiplier)
 end
-
 
 get '/wait/:seconds' do |seconds|
   duration = Float(seconds)
