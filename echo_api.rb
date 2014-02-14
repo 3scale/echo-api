@@ -60,16 +60,20 @@ get '/size/:size' do |original_size|
   send_file random_file(original_size,  * multiplier)
 end
 
+DOT = ".\n".freeze
+
+INCREMENTS = 100
+
 get '/wait/:seconds' do |seconds|
   duration = Float(seconds)
   stream do |io|
-    increment = duration / 1000
-    1000.times do |i|
+    increment = duration / INCREMENTS
+    INCREMENTS.times do |i|
       Kernel.sleep(increment)
-      io << "waited for #{increment}s\n"
+      io << DOT
     end
 
-    io << "done waiting #{duration}"
+    io << "done waiting #{seconds} seconds\n"
   end
 end
 
