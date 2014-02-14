@@ -60,21 +60,11 @@ get '/size/:size' do |original_size|
   send_file random_file(original_size,  * multiplier)
 end
 
-DOT = ".\n"
-
 get '/wait/:seconds' do |seconds|
   duration = Float(seconds)
 
-  stream do |io|
-    t = Thread.new do
-      loop do
-        io << DOT
-        sleep(0.1)
-      end
-    end
-    Kernel.sleep(duration)
-    t.kill
-  end
+  Kernel.sleep(duration)
+  body "slept #{duration} seconds"
 end
 
 
