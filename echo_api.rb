@@ -62,18 +62,18 @@ end
 
 DOT = ".\n"
 
-INCREMENTS = 100
-
 get '/wait/:seconds' do |seconds|
   duration = Float(seconds)
-  stream do |io|
-    increment = duration / INCREMENTS
-    INCREMENTS.times do |i|
-      Kernel.sleep(increment)
-      io << DOT
-    end
 
-    io << "done waiting #{seconds} seconds\n"
+  stream do |io|
+    t = Thread.new do
+      loop do
+        io << DOT
+        sleep(0.1)
+      end
+    end
+    Kernel.sleep(duration)
+    t.kill
   end
 end
 
