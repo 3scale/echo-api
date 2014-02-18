@@ -1,1 +1,1 @@
-web: bundle exec puma -w 4 -t 16:16 -p $PORT --preload
+web: bundle exec puma -w 8 -t 4:4-p $PORT --preload
