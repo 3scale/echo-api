@@ -72,11 +72,11 @@ all_methods "/**" do
   request.body.rewind
 
   content_type 'application/json'
-  {
+  JSON.pretty_generate(
     method: request.request_method,
     path: request.path,
     args: request.query_string,
     body: request.body.read,
     headers: get_headers()
-  }.to_json
+  )
 end
