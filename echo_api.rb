@@ -69,9 +69,10 @@ end
 
 
 all_methods "/**" do
-  r = request.body.rewind
+  request.body.rewind
 
-  return {
+  content_type 'application/json'
+  {
     method: request.request_method,
     path: request.path,
     args: request.query_string,
