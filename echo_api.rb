@@ -27,6 +27,19 @@ def get_headers
   env.select {|k, v| k.start_with? 'HTTP_'}
 end
 
+def echo_response
+  request.body.rewind
+
+  content_type 'application/json'
+  JSON.pretty_generate(
+    method: request.request_method,
+    path: request.path,
+    args: request.query_string,
+    body: request.body.read,
+    headers: get_headers()
+  )
+end
+
 @@random = Random.new
 
 def random_file(name, size)
@@ -60,6 +73,10 @@ get '/size/:size' do |original_size|
   send_file random_file(original_size,  * multiplier)
 end
 
+get '/status/:code' do |code|
+  [code.to_i, echo_response]
+end
+
 get '/wait/:seconds' do |seconds|
   duration = Float(seconds)
 
@@ -69,14 +86,5 @@ end
 
 
 all_methods "/**" do
-  request.body.rewind
-
-  content_type 'application/json'
-  JSON.pretty_generate(
-    method: request.request_method,
-    path: request.path,
-    args: request.query_string,
-    body: request.body.read,
-    headers: get_headers()
-  )
+  echo_response
 end
