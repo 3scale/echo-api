@@ -17,7 +17,6 @@ COPY config /opt/echo-api/config
 COPY config.ru /opt/echo-api/config.ru
 COPY echo_api.rb /opt/echo-api/echo_api.rb
 USER root
-RUN chmod 0755 /opt/echo-api/echo_api.rb
 
 USER ruby
 ENTRYPOINT ["bundle", "exec"]
