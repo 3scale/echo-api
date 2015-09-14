@@ -19,6 +19,7 @@ COPY echo_api.rb /opt/echo-api/echo_api.rb
 USER root
 RUN chmod 0755 /opt/echo-api/echo_api.rb
 
+USER ruby
 ENTRYPOINT ["bundle", "exec"]
 CMD ["/opt/echo-api/vendor/bundle/ruby/2.1.0/bin/rackup", "config.ru"]
 #Expose 9292 port
