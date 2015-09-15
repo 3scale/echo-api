@@ -13,6 +13,6 @@ USER ruby
 RUN bundle install --deployment --without development test
 
 ENTRYPOINT ["bundle", "exec"]
-CMD ["/opt/echo-api/vendor/bundle/ruby/2.1.0/bin/rackup", "config.ru"]
+CMD ["rackup", "config.ru"]
 #Expose 9292 port
 EXPOSE 9292
