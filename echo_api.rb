@@ -6,6 +6,7 @@ require "json"
 require 'newrelic_rpm'
 
 enable :logging
+set :protection, except: [:json_csrf]
 
 configure do
   set :server, :puma
