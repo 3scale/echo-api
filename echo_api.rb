@@ -6,6 +6,7 @@ require 'newrelic_rpm'
 require 'nokogiri'
 
 @@random = Random.new
+@@response_counter = 0
 
 enable :logging
 
@@ -37,6 +38,7 @@ def echo_response
         method: request.request_method,
         path: request.path,
         args: request.query_string,
+        counter: @@response_counter += 1,
         body: request.body.read,
         headers: get_headers()
       )
@@ -46,6 +48,7 @@ def echo_response
       xml.echoResponse {
         xml.method_ request.request_method
         xml.path request.path
+        xml.counter @@response_counter += 1
         xml.body request.body.read
         xml.headers { |headers|
           get_headers().each_pair do |key, value|
@@ -108,6 +111,9 @@ get '/wait/:seconds' do |seconds|
 
   Kernel.sleep(duration)
   body "slept #{duration} seconds"
+end
+
+get '/favicon.ico' do # Avoid bumping counter on favicon
 end
 
 all_methods "/**" do
