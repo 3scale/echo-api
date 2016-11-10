@@ -32,17 +32,8 @@ end
 
 def echo_response
   request.body.rewind
-  if request.accept?('application/json')
-      content_type 'application/json'
-      JSON.pretty_generate(
-        method: request.request_method,
-        path: request.path,
-        args: request.query_string,
-        uuid: SecureRandom.uuid(),
-        body: request.body.read,
-        headers: get_headers()
-      )
-  else
+  # Prefer JSON if possible, including cases of unrecognised/erroneous types.
+  if request.accept?('application/xml') && !request.accept?('application/json')
     content_type 'application/xml'
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.echoResponse {
@@ -69,6 +60,16 @@ def echo_response
       }
     end
     builder.to_xml
+  else
+    content_type 'application/json'
+    JSON.pretty_generate(
+      method: request.request_method,
+      path: request.path,
+      args: request.query_string,
+      uuid: SecureRandom.uuid(),
+      body: request.body.read,
+      headers: get_headers()
+    )
   end
 end
 
