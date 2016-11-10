@@ -1,9 +1,11 @@
 #shotgun app.rb -p 9294
 
 require 'sinatra'
-require "json"
-
+require 'json'
 require 'newrelic_rpm'
+require 'nokogiri'
+
+@@random = Random.new
 
 enable :logging
 
@@ -29,18 +31,43 @@ end
 
 def echo_response
   request.body.rewind
-
-  content_type 'application/json'
-  JSON.pretty_generate(
-    method: request.request_method,
-    path: request.path,
-    args: request.query_string,
-    body: request.body.read,
-    headers: get_headers()
-  )
+  if request.accept?('application/json')
+      content_type 'application/json'
+      JSON.pretty_generate(
+        method: request.request_method,
+        path: request.path,
+        args: request.query_string,
+        body: request.body.read,
+        headers: get_headers()
+      )
+  else
+    content_type 'application/xml'
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.echoResponse {
+        xml.method_ request.request_method
+        xml.path request.path
+        xml.body request.body.read
+        xml.headers { |headers|
+          get_headers().each_pair do |key, value|
+            headers.header { |header|
+              header.key key.split('HTTP_')[1]
+              header.value value
+            }
+          end
+        }
+        xml.args { |args|
+          request.env['rack.request.query_hash'].each_pair do |key, value|
+            args.arg { |arg|
+              arg.key key
+              arg.value value
+            }
+          end
+        }
+      }
+    end
+    builder.to_xml
+  end
 end
-
-@@random = Random.new
 
 def random_file(name, size)
   path = Pathname.new('tmp').join('size', name)
@@ -56,7 +83,6 @@ def random_file(name, size)
 
   path
 end
-
 
 get '/size/:size' do |original_size|
   size, unit = original_size.scan(/\d+|\D+/)
@@ -83,7 +109,6 @@ get '/wait/:seconds' do |seconds|
   Kernel.sleep(duration)
   body "slept #{duration} seconds"
 end
-
 
 all_methods "/**" do
   echo_response
