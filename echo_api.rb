@@ -4,6 +4,7 @@ require 'sinatra'
 require 'json'
 require 'newrelic_rpm'
 require 'nokogiri'
+require 'digest/sha1'
 require 'securerandom'
 
 @@random = Random.new
@@ -31,46 +32,68 @@ def get_headers
 end
 
 def echo_response
-  request.body.rewind
+  body_hasher = Digest::SHA1.new
+  body = ""
+
+  request.body.each do |chunk|
+    # Exclude obviously non-printable character(s).
+    body << chunk if /[\x00-\x1F]/ !~ chunk
+    body_hasher << chunk
+  end
+
+  response_args = {
+    method: request.request_method,
+    path: request.path,
+    args: request.query_string,
+    body: body,
+    headers: get_headers(),
+    uuid: SecureRandom.uuid
+  }
+  response_args.merge!(
+    bodySha1: body_hasher.base64digest(),
+    bodyLength: body.length
+  ) if body.length > 0
+
   # Prefer JSON if possible, including cases of unrecognised/erroneous types.
   if request.accept?('application/xml') && !request.accept?('application/json')
     content_type 'application/xml'
-    builder = Nokogiri::XML::Builder.new do |xml|
-      xml.echoResponse {
-        xml.method_ request.request_method
-        xml.path request.path
-        xml.uuid SecureRandom.uuid()
-        xml.body request.body.read
-        xml.headers { |headers|
-          get_headers().each_pair do |key, value|
-            headers.header { |header|
-              header.key key.split('HTTP_')[1]
-              header.value value
-            }
-          end
-        }
-        xml.args { |args|
-          request.env['rack.request.query_hash'].each_pair do |key, value|
-            args.arg { |arg|
-              arg.key key
-              arg.value value
-            }
-          end
-        }
-      }
-    end
-    builder.to_xml
+    build_xml_response(response_args)
   else
     content_type 'application/json'
-    JSON.pretty_generate(
-      method: request.request_method,
-      path: request.path,
-      args: request.query_string,
-      uuid: SecureRandom.uuid(),
-      body: request.body.read,
-      headers: get_headers()
-    )
+    JSON.pretty_generate(response_args)
   end
+end
+
+def build_xml_response(method:, path:, uuid:, body:, bodySha1: nil,
+  bodyLength:0, headers:, args: nil)
+
+  builder = Nokogiri::XML::Builder.new do |xml|
+    xml.echoResponse {
+      xml.method_ method
+      xml.path path
+      xml.uuid uuid
+      xml.bodySha1 bodySha1 if bodySha1
+      xml.bodyLength bodyLength if bodyLength > 0
+      xml.body body if bodyLength > 0
+      xml.headers { |headers_|
+        headers.each_pair do |key, value|
+          headers_.header { |header|
+            header.key key.split('HTTP_')[1]
+            header.value value
+          }
+        end
+      }
+      xml.args { |args|
+        request.env['rack.request.query_hash'].each_pair do |key, value|
+          args.arg { |arg|
+            arg.key key
+            arg.value value
+          }
+        end
+      }
+    }
+  end
+  builder.to_xml
 end
 
 def random_file(name, size)
