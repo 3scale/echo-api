@@ -26,6 +26,7 @@ DEPENDENCIES
   newrelic_rpm
   nokogiri (= 1.6.8.1)
   puma
+  rack (= 1.6.5)
   shotgun
   sinatra
 
