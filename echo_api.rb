@@ -6,6 +6,7 @@ require 'newrelic_rpm'
 require 'nokogiri'
 require 'digest/sha1'
 require 'securerandom'
+require 'base64'
 
 @@random = Random.new
 
@@ -32,13 +33,12 @@ def get_headers
 end
 
 def echo_response
-  body_hasher = Digest::SHA1.new
-  body = ""
-
-  request.body.each do |chunk|
-    # Exclude obviously non-printable character(s).
-    body << chunk if /[\x00-\x1F]/ !~ chunk
-    body_hasher << chunk
+  body = request.body.read
+  hash = Digest::SHA1.base64digest(body)
+  # B64 encode if contains obviously non-printable character(s).
+  if request.media_type == 'application/octet-stream' ||
+      request.media_type == 'multipart/form-data' || body =~ /[^[:print:]]/
+    body = Base64.encode64(body)
   end
 
   response_args = {
@@ -50,7 +50,7 @@ def echo_response
     uuid: SecureRandom.uuid
   }
   response_args.merge!(
-    bodySha1: body_hasher.base64digest(),
+    bodySha1: hash,
     bodyLength: body.length
   ) if body.length > 0
 
