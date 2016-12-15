@@ -14,5 +14,4 @@ RUN bundle install --deployment --without development test
 
 ENTRYPOINT ["bundle", "exec"]
 CMD ["rackup", "config.ru", "--host", "0.0.0.0"]
-#Expose 9292 port
 EXPOSE 9292

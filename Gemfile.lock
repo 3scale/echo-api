@@ -3,7 +3,6 @@ GEM
   specs:
     json (2.0.2)
     mini_portile2 (2.1.0)
-    newrelic_rpm (3.17.1.326)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
     puma (3.6.0)
@@ -23,15 +22,11 @@ PLATFORMS
 
 DEPENDENCIES
   json
-  newrelic_rpm
   nokogiri (= 1.6.8.1)
   puma
   rack (= 1.6.5)
   shotgun
   sinatra
-
-RUBY VERSION
-   ruby 2.3.1p112
 
 BUNDLED WITH
    1.13.6

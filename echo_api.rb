@@ -2,7 +2,6 @@
 
 require 'sinatra'
 require 'json'
-require 'newrelic_rpm'
 require 'nokogiri'
 require 'digest/sha1'
 require 'securerandom'
