@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
-gem 'newrelic_rpm'
 gem 'rack', '1.6.5'
 gem 'sinatra'
 gem 'puma'
