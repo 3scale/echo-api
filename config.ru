@@ -10,7 +10,7 @@ config = {
 :service_name => 'echo-api',
 :service_port => 9292,
 :sample_rate => 1.0,
-:json_api_host => 'https://admin:password@hawkular-apm-openshift-infra.54.169.160.2.xip.io'
+:json_api_host => ENV['HAWKULAR_ENDPOINT']
 }
 
 use ZipkinTracer::RackHandler, config
