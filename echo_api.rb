@@ -48,16 +48,16 @@ def echo_response
   # Return all request headers like
   #   ECHO.*: <foo>: <bar> as a response header <foo>: <bar>
   #   ECHO.*: <baz>        as a response header <baz>:
-  get_echoable_headers.each do |h|
-    if h[1] =~ /:/
-      header, value = h[1].split(':')
-      value.strip!
+  get_echoable_headers.each do |(_header, value)|
+    if value =~ /:/
+      response_header, response_value = value.split(':')
+      response_value.strip!
     else
-      header = h[1]
-      value = ' '
+      response_header = value
+      response_value = ' '
     end
 
-    headers[header] = value
+    headers[response_header] = response_value
   end
 
   response_args = {
