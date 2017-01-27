@@ -33,7 +33,7 @@ def get_headers
 end
 
 def get_echoable_headers
-  get_headers().select {|k, v| k.start_with? 'HTTP_ECHO'}
+  get_headers().select {|k, v| k.start_with? 'HTTP_ECHO_'}
 end
 
 def echo_response
@@ -46,18 +46,16 @@ def echo_response
   end
 
   # Return all request headers like
-  #   ECHO.*: <foo>: <bar> as a response header <foo>: <bar>
-  #   ECHO.*: <baz>        as a response header <baz>:
-  get_echoable_headers.each do |(_header, value)|
-    if value =~ /:/
-      response_header, response_value = value.split(':')
-      response_value.strip!
-    else
-      response_header = value
-      response_value = ' '
-    end
+  #   ECHO_<foo>: <bar> as a response header <foo>: <bar>
+  #   ECHO_<baz>        as a response header <baz>:
+  get_echoable_headers.each do |(header, value)|
+    response_header = header
+                        .gsub(/HTTP_ECHO_/, '')
+                        .split('_')
+                        .collect(&:capitalize)
+                        .join('-')
 
-    headers[response_header] = response_value
+    headers[response_header] = value
   end
 
   response_args = {
