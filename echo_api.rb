@@ -32,6 +32,10 @@ def get_headers
   env.select {|k, v| k.start_with? 'HTTP_'}
 end
 
+def get_echoable_headers
+  get_headers().select {|k, v| k.start_with? 'HTTP_ECHO_'}
+end
+
 def echo_response
   body = request.body.read
   hash = Digest::SHA1.base64digest(body)
@@ -39,6 +43,19 @@ def echo_response
   if request.media_type == 'application/octet-stream' ||
       request.media_type == 'multipart/form-data' || body =~ /[^[:print:]]/
     body = Base64.encode64(body)
+  end
+
+  # Return all request headers like
+  #   ECHO_<foo>: <bar> as a response header <foo>: <bar>
+  #   ECHO_<baz>        as a response header <baz>:
+  get_echoable_headers.each do |(header, value)|
+    response_header = header
+                        .gsub(/HTTP_ECHO_/, '')
+                        .split('_')
+                        .collect(&:capitalize)
+                        .join('-')
+
+    headers[response_header] = value
   end
 
   response_args = {
