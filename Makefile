@@ -1,4 +1,4 @@
-.PHONY: all build test run bash tag push help
+.PHONY: all build test run bash tag push pull help
 
 NAME=echoapi
 NAMESPACE=quay.io/3scale
@@ -16,11 +16,11 @@ all: build
 build: ## Build docker image with name LOCAL_IMAGE (NAME:VERSION).
 	docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH)
 
-test: ## Test built LOCAL_IMAGE (NAME:VERSION). 
-	docker run -t --env RACK_ENV=$(ENVIRONMENT) $(LOCAL_IMAGE) rackup -D
-	docker run -t $(LOCAL_IMAGE) 3scale_backend --version
-	docker run -t --env RACK_ENV=$(ENVIRONMENT) $(LOCAL_IMAGE) 3scale_backend_worker --version
-	docker run -t --env RACK_ENV=$(ENVIRONMENT) --env ONCE=1 $(LOCAL_IMAGE) backend-cron | grep "task crashed (RuntimeError)" > /dev/null # because redis is not running
+test: ## Test built LOCAL_IMAGE (NAME:VERSION).
+	docker run -t -p 9292:9292 -d $(LOCAL_IMAGE) 
+	@sleep 1 
+	curl localhost:9292
+	docker ps -l | awk 'FNR == 2 {print $$1}' | xargs docker kill
 
 run: ## Run the docker in the local machine.
 	docker run -t -P $(LOCAL_IMAGE)
@@ -33,6 +33,9 @@ tag: ## Tag IMAGE_NAME in the docker registry
 
 push: ## Push to the docker registry
 	docker push $(REMOTE_IMAGE)
+
+pull: ## Pull the docker from the Registry
+	docker pull $(REMOTE_IMAGE)
 
 # Check http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## Print this help
