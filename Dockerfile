@@ -1,18 +1,21 @@
-FROM quay.io/3scale/ruby:2.1
-MAINTAINER Oriol Martí <oriol@3scale.net> # 2015-06-26
+FROM centos/ruby-23-centos7 
+MAINTAINER Daniel Cesario <dcesario@redhat.com>
 
-RUN apt-install -y libssl-dev
+RUN yum -y update \
+	&& yum -y install openssl-devel 
 
 WORKDIR /opt/echo-api/
 
 COPY ./ /opt/echo-api
 
-RUN chown -fR ruby:ruby /opt/echo-api
-USER ruby
+RUN chown -fR 1001:1001 /opt/echo-api
+USER 1001
 
-RUN bundle install --deployment --without development test
+ENV BUNDLE_WITHOUT=development:test
+RUN bundle install --deployment 
 
 ENTRYPOINT ["bundle", "exec"]
 CMD ["rackup", "config.ru"]
+
 #Expose 9292 port
 EXPOSE 9292
