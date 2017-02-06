@@ -3,11 +3,13 @@ MAINTAINER Daniel Cesario <dcesario@redhat.com>
 
 USER root
 
-RUN yum -y update \
-	&& yum install -y centos-release-scl \
-	&& yum install -y rh-ruby23 rh-ruby23-ruby-devel \
-	&& yum -y install make gcc \
-	&& yum -y install openssl-devel 
+RUN yum -y update && yum install -y \
+	centos-release-scl \
+	gcc \
+	make \
+	openssl-devel \ 
+	rh-ruby23 \
+	rh-ruby23-ruby-devel 
 
 WORKDIR /opt/echo-api/
 
