@@ -1,0 +1,9 @@
+##Ignore documentation files
+	*.md
+
+##Igonre License 
+	LICENSE
+
+##Ignore Makefile and Dockerfile
+	Makefile
+	Dockerfile
