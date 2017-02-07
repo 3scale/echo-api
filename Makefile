@@ -17,10 +17,6 @@ build: ## Build docker image with name LOCAL_IMAGE (NAME:VERSION).
 	docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH)
 
 test: ## Test built LOCAL_IMAGE (NAME:VERSION). 
-	docker run -t --env RACK_ENV=$(ENVIRONMENT) $(LOCAL_IMAGE) rackup -D
-	docker run -t $(LOCAL_IMAGE) 3scale_backend --version
-	docker run -t --env RACK_ENV=$(ENVIRONMENT) $(LOCAL_IMAGE) 3scale_backend_worker --version
-	docker run -t --env RACK_ENV=$(ENVIRONMENT) --env ONCE=1 $(LOCAL_IMAGE) backend-cron | grep "task crashed (RuntimeError)" > /dev/null # because redis is not running
 
 run: ## Run the docker in the local machine.
 	docker run -t -P $(LOCAL_IMAGE)
