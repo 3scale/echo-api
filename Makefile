@@ -17,10 +17,11 @@ build: ## Build docker image with name LOCAL_IMAGE (NAME:VERSION).
 	docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH)
 
 test: ## Test built LOCAL_IMAGE (NAME:VERSION).
-	docker run -t -p 9292:9292 -d $(LOCAL_IMAGE) 
+	docker run --name $(VERSION) -t -p 9292:9292 -d $(LOCAL_IMAGE) 
 	@sleep 1 
 	curl localhost:9292
-	docker ps -l | awk 'FNR == 2 {print $$1}' | xargs docker kill
+	docker kill $(VERSION) 
+	docker rm $(VERSION)
 
 run: ## Run the docker in the local machine.
 	docker run -t -P $(LOCAL_IMAGE)
