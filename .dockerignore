@@ -1,7 +1,7 @@
 #Ignore documentation files
 	*.md
 
-#Igonre License 
+#Ignore License 
 	LICENSE
 
 #Ignore Makefile and Dockerfile
