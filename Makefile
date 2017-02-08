@@ -1,8 +1,8 @@
 .PHONY: all build test run bash tag push pull help
 
-NAME=echoapi
-NAMESPACE=quay.io/3scale
-VERSION=centos7-to-ocp
+NAME = echoapi
+NAMESPACE = quay.io/3scale
+VERSION ?= centos7-to-ocp
 LOCAL_IMAGE := $(NAME):$(VERSION)
 REMOTE_IMAGE := $(NAMESPACE)/$(LOCAL_IMAGE)
 
@@ -13,18 +13,19 @@ PROJECT_PATH := $(patsubst %/,%,$(dir $(MKFILE_PATH)))
 
 all: build
 
+update: pull build test push 
+
 build: ## Build docker image with name LOCAL_IMAGE (NAME:VERSION).
 	docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH)
 
 test: ## Test built LOCAL_IMAGE (NAME:VERSION).
-	docker run --name $(VERSION) -t -p 9292:9292 -d $(LOCAL_IMAGE) 
+	docker run --rm -u 10000001 --name $(VERSION) -t -p 9292:9292 -d $(LOCAL_IMAGE)  
 	@sleep 1 
 	curl localhost:9292
 	docker kill $(VERSION) 
-	docker rm $(VERSION)
 
 run: ## Run the docker in the local machine.
-	docker run --rm -t -P $(LOCAL_IMAGE)
+	docker run --rm -u 10000001 -t -P $(LOCAL_IMAGE)
 
 bash: ## Start bash in the build IMAGE_NAME.
 	docker run --rm --entrypoint=/bin/bash -it $(LOCAL_IMAGE)
