@@ -55,7 +55,7 @@ oc secrets new-dockercfg quay-auth -n echo-api \
 - Create the template:
 
 ```
-oc new-app -f echo-api-template.ym
+oc new-app -f echo-api-template.yml
 ```
 
 - Check status:
