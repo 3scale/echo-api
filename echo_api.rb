@@ -112,45 +112,8 @@ def build_xml_response(method:, path:, uuid:, body:, bodySha1: nil,
   builder.to_xml
 end
 
-def random_file(name, size)
-  path = Pathname.new('tmp').join('size', name)
-
-  return path if path.exist?
-
-  content = @@random.bytes(size)
-  path.dirname.mkpath
-
-  path.open('w') do |f|
-    f << content
-  end
-
-  path
-end
-
-get '/size/:size' do |original_size|
-  size, unit = original_size.scan(/\d+|\D+/)
-
-  size = Integer(size)
-  unit = String(unit).downcase
-
-  multiplier = case unit
-                 when 'kb' then 1024
-                 when 'mb' then 1024*1024
-                 else 1
-               end
-
-  send_file random_file(original_size,  * multiplier)
-end
-
 get '/status/:code' do |code|
   [code.to_i, echo_response]
-end
-
-get '/wait/:seconds' do |seconds|
-  duration = Float(seconds)
-
-  Kernel.sleep(duration)
-  body "slept #{duration} seconds"
 end
 
 get '/favicon.ico' do # Avoid bumping counter on favicon
