@@ -2,18 +2,12 @@
   "name": "echo-api",
   "scripts": {
   },
-  "env": {
-    "NEW_RELIC_APP_NAME": {
-      "required": true
-    }
-  },
   "formation": {
     "web": {
       "quantity": 1
     }
   },
   "addons": [
-    "newrelic",
     "papertrail"
   ],
   "buildpacks": [
