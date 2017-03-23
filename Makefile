@@ -2,7 +2,7 @@
 
 NAME = echoapi
 NAMESPACE = quay.io/3scale
-VERSION ?= centos7-to-ocp
+VERSION ?= new-echoapi
 LOCAL_IMAGE := $(NAME):$(VERSION)
 REMOTE_IMAGE := $(NAMESPACE)/$(LOCAL_IMAGE)
 
@@ -13,7 +13,7 @@ PROJECT_PATH := $(patsubst %/,%,$(dir $(MKFILE_PATH)))
 
 all: build
 
-update: pull build test push 
+update: build test push 
 
 build: ## Build docker image with name LOCAL_IMAGE (NAME:VERSION).
 	docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH)
@@ -30,10 +30,11 @@ run: ## Run the docker in the local machine.
 bash: ## Start bash in the build IMAGE_NAME.
 	docker run --rm --entrypoint=/bin/bash -it $(LOCAL_IMAGE)
 
+
 tag: ## Tag IMAGE_NAME in the docker registry
 	docker tag $(LOCAL_IMAGE) $(REMOTE_IMAGE)
 
-push: ## Push to the docker registry
+push: tag ## Push to the docker registry
 	docker push $(REMOTE_IMAGE)
 
 pull: ## Pull the docker from the Registry
