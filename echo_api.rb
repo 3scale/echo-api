@@ -6,6 +6,7 @@ require 'nokogiri'
 require 'digest/sha1'
 require 'securerandom'
 require 'base64'
+require 'rack/cors'
 
 @@random = Random.new
 
@@ -15,6 +16,16 @@ configure do
   set :server, :puma
   set :public_folder, 'tmp'
   enable :static
+end
+
+# Enabling CORS
+use Rack::Cors do
+  allow do
+    origins '*'
+    resource '*', headers: :any, methods: [
+      :head, :options, :get, :post, :patch, :put, :delete
+    ]
+  end
 end
 
 def all_methods(path, opts = {}, &block)
