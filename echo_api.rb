@@ -11,6 +11,7 @@ require 'rack/cors'
 @@random = Random.new
 
 enable :logging
+set :protection, except: [:json_csrf]
 
 configure do
   set :server, :puma
