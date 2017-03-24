@@ -8,22 +8,20 @@ host: echo-api.3scale.net
 schemes:
   - https
   - http
-# will be prefixed to all paths
-basePath: /v1
 produces:
   - application/json
   - application/xml
 paths:
   /{requestPath}:
     get:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'        
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -32,14 +30,14 @@ paths:
             items:
               $ref: '#/definitions/Response'
     post:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -48,14 +46,14 @@ paths:
             items:
               $ref: '#/definitions/Response'
     put:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -64,14 +62,14 @@ paths:
             items:
               $ref: '#/definitions/Response'
     delete:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -80,14 +78,14 @@ paths:
             items:
               $ref: '#/definitions/Response'
     patch:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -96,14 +94,14 @@ paths:
             items:
               $ref: '#/definitions/Response'
     options:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'        
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -112,14 +110,14 @@ paths:
             items:
               $ref: '#/definitions/Response'
     head:
-      summary: Wildcard Route
-      description: Wildcard route which will echo any given path.
+      summary: Wildcard Path
+      description: Wildcard Path which will echo any given path.
       parameters:
         - $ref: '#/parameters/requestPath'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'
       tags:
-        - Wildcard Route
+        - Wildcard Path
       responses:
         200:
           description: Default request response
@@ -135,6 +133,8 @@ paths:
         - $ref: '#/parameters/statusCode'
         - $ref: '#/parameters/requestArgument'
         - $ref: '#/parameters/requestBody'
+      tags:
+        - Status
       responses:
         200:
           description: Default request response
@@ -490,6 +490,8 @@ paths:
       parameters:
         - $ref: '#/parameters/statusCode'
         - $ref: '#/parameters/requestArgument'
+      tags:
+        - Status
       responses:
         200:
           description: Default request response
@@ -845,6 +847,8 @@ paths:
       parameters:
         - $ref: '#/parameters/statusCode'
         - $ref: '#/parameters/requestArgument'
+      tags:
+        - Status
       responses:
         200:
           description: Default request response
@@ -1200,6 +1204,8 @@ paths:
       parameters:
         - $ref: '#/parameters/statusCode'
         - $ref: '#/parameters/requestArgument'
+      tags:
+        - Status
       responses:
         200:
           description: Default request response
@@ -1555,6 +1561,8 @@ paths:
       parameters:
         - $ref: '#/parameters/statusCode'
         - $ref: '#/parameters/requestArgument'
+      tags:
+        - Status
       responses:
         200:
           description: Default request response
@@ -1910,6 +1918,8 @@ paths:
       parameters:
         - $ref: '#/parameters/statusCode'
         - $ref: '#/parameters/requestArgument'
+      tags:
+        - Status
       responses:
         200:
           description: Default request response
