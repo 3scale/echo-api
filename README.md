@@ -3,4 +3,4 @@ echo-api
 
 Stupid sinatra app that returns back info about the request 
 
-http://echo-api.herokuapp.com/ 
+https://echo-api.3scale.net/ 
