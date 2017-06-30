@@ -94,7 +94,7 @@ objects:
 parameters:
 - name: ECHOAPI_IMAGE
   description: "Docker image to the Echo API"
-  value: "quay.io/3scale/echoapi:centos7-to-ocp"
+  value: "quay.io/3scale/echoapi:master"
   required: true
 
 
