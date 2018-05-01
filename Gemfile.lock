@@ -2,9 +2,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     json (2.0.2)
-    mini_portile2 (2.1.0)
-    nokogiri (1.6.8.1)
-      mini_portile2 (~> 2.1.0)
+    mini_portile2 (2.3.0)
+    nokogiri (1.8.2)
+      mini_portile2 (~> 2.3.0)
     puma (3.6.0)
     rack (1.6.10)
     rack-cors (0.4.1)
@@ -23,7 +23,7 @@ PLATFORMS
 
 DEPENDENCIES
   json
-  nokogiri (= 1.6.8.1)
+  nokogiri (~> 1.8.1)
   puma
   rack (~> 1)
   rack-cors (~> 0.4)
