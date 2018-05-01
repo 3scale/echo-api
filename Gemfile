@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '~> 2.3.1'
-gem 'rack', '1.6.10'
+gem 'rack', '2.0.5'
 gem 'sinatra'
 gem 'puma'
 gem 'nokogiri', '1.8.2'
