@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    working_directory: /home/circleci/echo-api
+    docker:
+      - image: circleci/ruby:2.3
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - echo-api-v1-bundle-{{ checksum "Gemfile.lock" }}
+            - echo-api-v1-bundle-
+
+      - run:
+          name: Bundle Install
+          command: bundle check || bundle install
+
+      - save_cache:
+          key: echo-api-v1-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Start Echo API
+          command: |
+            bundle exec rackup --port 3000 --host 0.0.0.0 --env production --daemonize
+            dockerize -wait tcp://localhost:3000 -timeout 1m
+
+      - run:
+          name: Smoke test Echo API
+          command: |
+            curl --fail http://localhost:3000/test
+
