@@ -6,7 +6,7 @@ GEM
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     puma (3.11.4)
-    rack (1.6.5)
+    rack (1.6.10)
     rack-cors (1.0.2)
     rack-protection (1.5.5)
       rack
@@ -25,7 +25,7 @@ DEPENDENCIES
   json
   nokogiri (= 1.8.2)
   puma
-  rack (= 1.6.5)
+  rack (= 1.6.10)
   rack-cors
   shotgun
   sinatra
