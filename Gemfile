@@ -9,6 +9,12 @@ gem 'rack-cors', :require => 'rack/cors'
 
 gem 'json'
 
+# Opentracing
+gem 'rack-tracer', '= 0.4.0'
+gem 'opentracing', '= 0.4.0'
+gem 'spanmanager', '= 0.3.0'
+gem 'jaeger-client', '= 0.4.2'
+
 group :development do
   gem 'shotgun'
 end
