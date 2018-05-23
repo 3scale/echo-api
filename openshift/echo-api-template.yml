@@ -11,13 +11,6 @@ metadata:
 objects:
 
 - apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    name: echo-api
-  imagePullSecrets:
-    - name: quay-auth 
-
-- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     name: echo-api
@@ -100,5 +93,5 @@ parameters:
 
 - name: ECHOAPI_HOST
   description: "Host for the Route Object"
-  value: "echo-api.os-dev.3sca.net"
+  value: "yourhost.com"
   required: true
