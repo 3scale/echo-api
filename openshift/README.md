@@ -33,23 +33,13 @@ kubernetes v1.2.0-36-g4a3f9c5
 - Login:
 
 ```shell
-$ oc login https://openshift.os.3sca.net:8443 --insecure-skip-tls-verify
+$ oc login https://openshift.server.com:8443 --insecure-skip-tls-verify
 ```
 
 - Create or switch to your project:
 
 ```
 oc new-project echo-api
-```
-
-- Create the needed secrets:
-
-(you will need to replace some parts..)
-
-```shell
-oc secrets new-dockercfg quay-auth -n echo-api \
-    --docker-server=quay.io --docker-username=3scale+openshift --docker-email=. \
-    --docker-password='# quay.io-3scale-openshift in zoho vault #' 
 ```
 
 - Create the template:
