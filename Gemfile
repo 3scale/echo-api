@@ -11,7 +11,7 @@ gem 'json'
 
 # Opentracing
 gem 'rack-tracer', '0.5.0'
-gem 'opentracing', '= 0.4.0'
+gem 'opentracing', '0.4.1'
 gem 'spanmanager', '= 0.3.0'
 gem 'jaeger-client', '= 0.4.2'
 

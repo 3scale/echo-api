@@ -9,7 +9,7 @@ GEM
     mustermann (1.0.2)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
-    opentracing (0.4.0)
+    opentracing (0.4.1)
     puma (3.11.4)
     rack (2.0.5)
     rack-cors (1.0.2)
@@ -36,7 +36,7 @@ DEPENDENCIES
   jaeger-client (= 0.4.2)
   json
   nokogiri (= 1.8.2)
-  opentracing (= 0.4.0)
+  opentracing (= 0.4.1)
   puma
   rack (= 2.0.5)
   rack-cors
