@@ -28,11 +28,12 @@ jobs:
       - run:
           name: Start Echo API
           command: |
-            bundle exec rackup --port 3000 --host 0.0.0.0 --env production --daemonize
-            dockerize -wait tcp://localhost:3000 -timeout 1m
+            bundle exec rackup --port 3000 --host 0.0.0.0 --env production
+          background: true
 
       - run:
           name: Smoke test Echo API
           command: |
-            curl --fail http://localhost:3000/test
+            dockerize -wait tcp://0.0.0.0:3000 -timeout 1m
+            curl --fail http://0.0.0.0:3000/test
 
