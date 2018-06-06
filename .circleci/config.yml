@@ -13,15 +13,14 @@ jobs:
 
       - restore_cache:
           keys:
-            - echo-api-v1-bundle-{{ checksum "Gemfile.lock" }}
-            - echo-api-v1-bundle-
+            - echo-api-v1-bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
 
       - run:
           name: Bundle Install
           command: bundle check || bundle install
 
       - save_cache:
-          key: echo-api-v1-bundle-{{ checksum "Gemfile.lock" }}
+          key: echo-api-v1-bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
 
