@@ -45,7 +45,7 @@ oc new-project echo-api
 - Create the template:
 
 ```
-oc new-app -f echo-api-template.yml
+oc new-app -f echo-api-template.yml --param ECHOAPI_HOST=<a-hostname-for-echo-api-route>
 ```
 
 - Check status:
