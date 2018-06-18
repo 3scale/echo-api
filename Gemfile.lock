@@ -7,7 +7,7 @@ GEM
     json (2.1.0)
     mini_portile2 (2.3.0)
     mustermann (1.0.2)
-    nokogiri (1.8.2)
+    nokogiri (1.8.3)
       mini_portile2 (~> 2.3.0)
     opentracing (0.4.1)
     puma (3.11.4)
@@ -35,7 +35,7 @@ PLATFORMS
 DEPENDENCIES
   jaeger-client (= 0.4.2)
   json
-  nokogiri (= 1.8.2)
+  nokogiri (= 1.8.3)
   opentracing (= 0.4.1)
   puma
   rack (= 2.0.5)
