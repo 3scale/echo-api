@@ -93,5 +93,4 @@ parameters:
 
 - name: ECHOAPI_HOST
   description: "Host for the Route Object"
-  value: "yourhost.com"
   required: true
