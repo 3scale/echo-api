@@ -1,19 +1,19 @@
 source 'https://rubygems.org'
 
 ruby '~> 2.3.1'
-gem 'rack', '2.0.5'
+gem 'rack'
 gem 'sinatra'
 gem 'puma'
-gem 'nokogiri', '1.8.2'
+gem 'nokogiri'
 gem 'rack-cors', :require => 'rack/cors'
 
 gem 'json'
 
 # Opentracing
-gem 'rack-tracer', '0.5.0'
-gem 'opentracing', '0.4.1'
-gem 'spanmanager', '= 0.3.0'
-gem 'jaeger-client', '= 0.4.2'
+gem 'rack-tracer'
+gem 'opentracing'
+gem 'spanmanager'
+gem 'jaeger-client'
 
 group :development do
   gem 'shotgun'
