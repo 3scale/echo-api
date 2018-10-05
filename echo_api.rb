@@ -1,4 +1,6 @@
-#shotgun app.rb -p 9294
+# frozen_string_literal: true
+
+# shotgun app.rb -p 9294
 
 require 'sinatra'
 require 'json'
@@ -7,8 +9,6 @@ require 'digest/sha1'
 require 'securerandom'
 require 'base64'
 require 'rack/cors'
-
-@@random = Random.new
 
 enable :logging
 set :protection, except: [:json_csrf]
@@ -24,7 +24,7 @@ when 'jaeger'
   require 'jaeger/client'
   require 'rack/tracer'
 
-  jaeger_agent_host = ENV['JAEGER_AGENT_HOST'] || "127.0.0.1"
+  jaeger_agent_host = ENV['JAEGER_AGENT_HOST'] || '127.0.0.1'
   jaeger_agent_port = ENV['JAEGER_AGENT_PORT'] || 6831
   jaeger_service_name = ENV['JAEGER_SERVICE_NAME'] || 'echo-api'
   jaeger_client = Jaeger::Client.build(host: jaeger_agent_host,
@@ -39,8 +39,8 @@ end
 use Rack::Cors do
   allow do
     origins '*'
-    resource '*', headers: :any, methods: [
-      :head, :options, :get, :post, :patch, :put, :delete
+    resource '*', headers: :any, methods: %i[
+      head options get post patch put delete
     ]
   end
 end
@@ -56,11 +56,11 @@ def all_methods(path, opts = {}, &block)
 end
 
 def get_headers
-  env.select {|k, v| k.start_with? 'HTTP_'}
+  env.select { |k, _v| k.start_with? 'HTTP_' }
 end
 
 def get_echoable_headers
-  get_headers().select {|k, v| k.start_with? 'HTTP_ECHO_'}
+  get_headers.select { |k, _v| k.start_with? 'HTTP_ECHO_' }
 end
 
 def echo_response
@@ -68,7 +68,7 @@ def echo_response
   hash = Digest::SHA1.base64digest(body)
   # B64 encode if contains obviously non-printable character(s).
   if request.media_type == 'application/octet-stream' ||
-      request.media_type == 'multipart/form-data' || body =~ /[^[:print:]]/
+     request.media_type == 'multipart/form-data' || body =~ /[^[:print:]]/
     body = Base64.encode64(body)
   end
 
@@ -77,10 +77,10 @@ def echo_response
   #   ECHO_<baz>        as a response header <baz>:
   get_echoable_headers.each do |(header, value)|
     response_header = header
-                        .gsub(/HTTP_ECHO_/, '')
-                        .split('_')
-                        .collect(&:capitalize)
-                        .join('-')
+                      .gsub(/HTTP_ECHO_/, '')
+                      .split('_')
+                      .collect(&:capitalize)
+                      .join('-')
 
     headers[response_header] = value
   end
@@ -90,13 +90,13 @@ def echo_response
     path: request.path,
     args: request.query_string,
     body: body,
-    headers: get_headers(),
+    headers: get_headers,
     uuid: SecureRandom.uuid
   }
-  response_args.merge!(
-    bodySha1: hash,
-    bodyLength: body.length
-  ) if body.length > 0
+  unless body.empty?
+    response_args[:bodySha1] = hash
+    response_args[:bodyLength] = body.length
+  end
 
   # Prefer JSON if possible, including cases of unrecognised/erroneous types.
   if request.accept?('application/xml') && !request.accept?('application/json')
@@ -109,33 +109,33 @@ def echo_response
 end
 
 def build_xml_response(method:, path:, uuid:, body:, bodySha1: nil,
-  bodyLength:0, headers:, args: nil)
+                       bodyLength: 0, headers:, args: nil)
 
   builder = Nokogiri::XML::Builder.new do |xml|
-    xml.echoResponse {
+    xml.echoResponse do
       xml.method_ method
       xml.path path
       xml.uuid uuid
       xml.bodySha1 bodySha1 if bodySha1
       xml.bodyLength bodyLength if bodyLength > 0
       xml.body body if bodyLength > 0
-      xml.headers { |headers_|
+      xml.headers do |headers_|
         headers.each_pair do |key, value|
-          headers_.header { |header|
+          headers_.header do |header|
             header.key key.split('HTTP_')[1]
             header.value value
-          }
+          end
         end
-      }
-      xml.args { |args|
+      end
+      xml.args do |args|
         request.env['rack.request.query_hash'].each_pair do |key, value|
-          args.arg { |arg|
+          args.arg do |arg|
             arg.key key
             arg.value value
-          }
+          end
         end
-      }
-    }
+      end
+    end
   end
   builder.to_xml
 end
@@ -147,6 +147,6 @@ end
 get '/favicon.ico' do # Avoid bumping counter on favicon
 end
 
-all_methods "/**" do
+all_methods '/**' do
   echo_response
 end
