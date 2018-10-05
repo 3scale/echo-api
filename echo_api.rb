@@ -19,18 +19,20 @@ configure do
   enable :static
 end
 
-if ENV['OPENTRACING_TRACER'] == 'jaeger'
-  require 'opentracing'
+case ENV['OPENTRACING_TRACER']
+when 'jaeger'
   require 'jaeger/client'
-  require 'spanmanager'
   require 'rack/tracer'
 
   jaeger_agent_host = ENV['JAEGER_AGENT_HOST'] || '127.0.0.1'
   jaeger_agent_port = ENV['JAEGER_AGENT_PORT'] || 6831
   jaeger_service_name = ENV['JAEGER_SERVICE_NAME'] || 'echo-api'
-  jaeger_client = Jaeger::Client.build(host: jaeger_agent_host, port: jaeger_agent_port, service_name: jaeger_service_name, flush_interval: 1)
-  OpenTracing.global_tracer = SpanManager::Tracer.new(jaeger_client)
-  use ::Rack::Tracer
+  jaeger_client = Jaeger::Client.build(host: jaeger_agent_host,
+                                       port: jaeger_agent_port,
+                                       service_name: jaeger_service_name,
+                                       flush_interval: 1)
+
+  use ::Rack::Tracer, tracer: jaeger_client
 end
 
 # Enabling CORS
