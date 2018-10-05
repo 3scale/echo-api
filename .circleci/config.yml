@@ -8,6 +8,11 @@ jobs:
           BUNDLE_JOBS: 3
           BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
+          OPENTRACING_TRACER: jaeger
+          BUNDLE_FROZEN: true # --deployment
+      - image: jaegertracing/all-in-one:1.7
+        environment:
+          COLLECTOR_ZIPKIN_HTTP_PORT: 9411
     steps:
       - checkout
 
@@ -33,6 +38,14 @@ jobs:
       - run:
           name: Smoke test Echo API
           command: |
-            dockerize -wait tcp://0.0.0.0:3000 -timeout 1m
+            dockerize -wait tcp://localhost:16686 -timeout 1m # wait for jaeger
+            dockerize -wait tcp://0.0.0.0:3000 -timeout 1m # wait for echo-api
+
             curl --fail http://0.0.0.0:3000/test
+
+      - run:
+          name: Verify OpenTracing
+          command: |
+            sleep 1 # that is the flush timeout
+            curl http://localhost:16686/api/services/echo-api/operations | jq '(.data | length) > 0' --exit-status
 
