@@ -12,7 +12,7 @@ gem 'sinatra'
 gem 'json'
 
 # Opentracing
-gem 'jaeger-client', '0.6.1'
+gem 'jaeger-client', '0.7.0'
 gem 'opentracing', '0.4.1'
 gem 'rack-tracer', '0.8.0'
 gem 'spanmanager', '= 0.3.0'
