@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: echo-api-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: echo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - echo-api-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /echo-api
+    route:
+    - destination:
+        host: echo-api
+        port:
+          number: 80
