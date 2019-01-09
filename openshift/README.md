@@ -53,3 +53,26 @@ oc new-app -f echo-api-template.yml --param ECHOAPI_HOST=<a-hostname-for-echo-ap
 ```
 oc status
 ```
+
+# Deploy within Istio service mesh
+
+Note: The following commands require `admin` permissions within OpenShift/k8s
+
+To deploy the `echo-api` within istio, run the following:
+
+```
+# Set required privileges on the namesapce
+oc adm policy add-scc-to-user anyuid -z default -n <your-namespace>
+oc adm policy add-scc-to-user privileged -z default -n <your-namespace>
+
+# Deploy the application and associated resources
+oc create -f istio/ -n <your-namespace>
+
+# Set the ingress-gateway as a variable
+export GW=$(oc get route istio-ingressgateway -n istio-system -o go-template='http://{{ .spec.host }}')
+```
+
+To test the integration, run:
+```
+curl ${GW}/echo-api/test
+```
