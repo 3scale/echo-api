@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 ruby '~> 2.3.1'
-gem 'nokogiri', '1.10.0'
+gem 'nokogiri', '1.10.1'
 gem 'puma'
 gem 'rack', '2.0.6'
 gem 'rack-cors', require: 'rack/cors'
