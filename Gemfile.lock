@@ -46,8 +46,5 @@ DEPENDENCIES
   sinatra
   spanmanager (= 0.3.0)
 
-RUBY VERSION
-   ruby 2.3.1p112
-
 BUNDLED WITH
-   1.16.2
+   2.0.2

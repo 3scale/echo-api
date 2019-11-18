@@ -2,7 +2,7 @@
 FROM centos:7
 LABEL authors="Oriol Martí <oriol@3scale.net>,Daniel Cesario <dcesario@redhat.com>"
 
-ENV RUBY_VERSION="rh-ruby23"
+ENV RUBY_VERSION="rh-ruby26"
 
 RUN yum -y update \
   && yum install -y centos-release-scl \
