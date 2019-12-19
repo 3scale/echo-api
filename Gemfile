@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'nokogiri', '1.10.6'
 gem 'puma'
-gem 'rack', '2.0.7'
+gem 'rack', '2.0.8'
 gem 'rack-cors', require: 'rack/cors'
 gem 'sinatra'
 
