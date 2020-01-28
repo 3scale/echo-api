@@ -12,7 +12,7 @@ GEM
       mini_portile2 (~> 2.4.0)
     opentracing (0.4.1)
     puma (3.12.2)
-    rack (2.0.8)
+    rack (2.1.2)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-protection (2.0.8.1)
@@ -41,7 +41,7 @@ DEPENDENCIES
   nokogiri (= 1.10.7)
   opentracing (= 0.4.1)
   puma
-  rack (= 2.0.8)
+  rack (= 2.1.2)
   rack-cors
   rack-tracer (= 0.9.0)
   shotgun
