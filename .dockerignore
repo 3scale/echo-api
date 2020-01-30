@@ -1,9 +1,12 @@
-#Ignore documentation files
-	*.md
-
-#Ignore License 
-	LICENSE
-
-#Ignore Makefile and Dockerfile
-	Makefile
-	Dockerfile
+./.bundle
+./.dockerignore
+./.gitignore
+./.git
+./.circleci
+./Makefile
+./Dockerfile
+./istio
+./openshift
+./*.md
+./LICENSE
+./NOTICE
