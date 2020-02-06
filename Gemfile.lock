@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    jaeger-client (0.6.1)
+    jaeger-client (1.0.0)
       opentracing (~> 0.3)
       thrift
     json (2.3.0)
@@ -38,7 +38,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  jaeger-client (= 0.6.1)
+  jaeger-client (= 1.0.0)
   json
   nokogiri (~> 1)
   opentracing (= 0.4.1)
