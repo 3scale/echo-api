@@ -59,9 +59,8 @@ def get_headers
   env.select { |k, _v| k.start_with? 'HTTP_' }
 end
 
-def get_echoable_headers
-  get_headers.select { |k, _v| k.start_with? 'HTTP_ECHO_' }
-end
+# Constant to trim headers starting with the string below
+ECHO_HEADER_PREFIX_SIZE = 'HTTP_ECHO_'.size
 
 def echo_response
   body = request.body.read
@@ -72,14 +71,17 @@ def echo_response
     body = Base64.encode64(body)
   end
 
+  env_headers = get_headers
+
   # Return all request headers like
   #   ECHO_<foo>: <bar> as a response header <foo>: <bar>
   #   ECHO_<baz>        as a response header <baz>:
-  get_echoable_headers.each do |(header, value)|
-    response_header = header
-                      .gsub(/HTTP_ECHO_/, '')
+  env_headers.select do |k, _v|
+    k.start_with? 'HTTP_ECHO_'
+  end.each do |header, value|
+    response_header = header[ECHO_HEADER_PREFIX_SIZE..-1]
                       .split('_')
-                      .collect(&:capitalize)
+                      .map(&:capitalize)
                       .join('-')
 
     headers[response_header] = value
@@ -90,7 +92,7 @@ def echo_response
     path: request.path,
     args: request.query_string,
     body: body,
-    headers: get_headers,
+    headers: env_headers,
     uuid: SecureRandom.uuid
   }
   unless body.empty?
