@@ -48,6 +48,7 @@ USER 1001:1001
 # Copy over the whole bundle
 COPY --chown=1001:1001 --from=builder "${HOME}/" "${HOME}/"
 
+ENV RACK_ENV="production"
 CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0"]
 
 # Development image
