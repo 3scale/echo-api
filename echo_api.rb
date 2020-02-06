@@ -56,7 +56,9 @@ def all_methods(path, opts = {}, &block)
 end
 
 def get_headers
-  env.select { |k, _v| k.start_with? 'HTTP_' }
+  env.select do |k, _v|
+    k.start_with?('HTTP_') || k == 'CONTENT_LENGTH' || k == 'CONTENT_TYPE'
+  end
 end
 
 def get_echoable_headers
