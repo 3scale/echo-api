@@ -1,4 +1,5 @@
-.PHONY: all build test run bash tag push pull help
+.PHONY: all build test run bash tag push pull help update build-builder build-dev stop-dev clean-dev \
+	clean-dev-image clean-builder-image ensure-build ensure-builder ensure-dev
 
 NAME = echoapi
 NAMESPACE = quay.io/3scale
@@ -25,9 +26,17 @@ build: ## Build container image with name LOCAL_IMAGE (NAME:VERSION).
 build-builder:
 	$(DOCKER) build --target builder -f $(THISDIR_PATH)/Dockerfile -t $(BUILDER_IMAGE) $(PROJECT_PATH)
 
-build-dev: ## Build a development container image with name LOCAL_IMAGE (NAME:VERSION).
+ensure-build:
+	@$(DOCKER) history -q $(LOCAL_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build
+
+ensure-builder:
 	@$(DOCKER) history -q $(BUILDER_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build-builder
-	if echo "$(DOCKER)" | grep -q podman; then \
+
+ensure-dev:
+	@$(DOCKER) history -q $(DEV_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build-dev
+
+build-dev: ensure-builder ## Build a development container image with name LOCAL_IMAGE (NAME:VERSION).
+	@if echo "$(DOCKER)" | grep -q podman; then \
 		DEV_UID=0; \
 		DEV_GID=0; \
 	else \
@@ -52,27 +61,20 @@ clean-builder-image: ## Remove the builder image
 	-$(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) clean-dev-image
 	$(DOCKER) rmi $(BUILDER_IMAGE)
 
-test: ## Test built LOCAL_IMAGE (NAME:VERSION).
-	@$(DOCKER) history -q $(LOCAL_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build
-	$(DOCKER) run --rm \
-		--name $(VERSION) -t -p 9292:9292 -d $(LOCAL_IMAGE)
+test: ensure-build ## Test built LOCAL_IMAGE (NAME:VERSION).
+	$(DOCKER) run --rm --name $(VERSION) -d -p 9292:9292 $(LOCAL_IMAGE)
 	@sleep 2
 	curl -v "http://localhost:9292"
 	@$(DOCKER) kill $(VERSION)
 	@echo "Test OK."
 
-run: ## Run the container in the local machine.
-	@$(DOCKER) history -q $(LOCAL_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build
-	$(DOCKER) run --rm \
-		-u $$($(DOCKER) run --rm $(LOCAL_IMAGE) /bin/bash -c 'id -u'):$$($(DOCKER) run --rm $(LOCAL_IMAGE) /bin/bash -c 'id -g') \
-		-t -P $(LOCAL_IMAGE)
+run: ensure-build ## Run the container in the local machine.
+	$(DOCKER) run --rm --name $(VERSION) -ti -p 9292:9292 $(LOCAL_IMAGE)
 
-bash: ## Start bash in the build IMAGE_NAME.
-	@$(DOCKER) history -q $(LOCAL_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build
+bash: ensure-build ## Start bash in the build IMAGE_NAME.
 	$(DOCKER) run --rm -ti $(LOCAL_IMAGE) /bin/bash
 
-dev: ## Start a development environment sync'ed with the code
-	@$(DOCKER) history -q $(DEV_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build-dev
+dev: ensure-dev ## Start a development environment sync'ed with the code
 	@if $(DOCKER) ps --filter name=$(DEV_CONTAINER) --format "{{.Names}}" | grep -q '^$(DEV_CONTAINER)$$' 2> /dev/null >&2; then \
 		echo "Container $(DEV_CONTAINER) already started" >&2; false; \
 	fi
@@ -92,8 +94,7 @@ dev: ## Start a development environment sync'ed with the code
 		--name $(DEV_CONTAINER) $(DEV_IMAGE) /bin/bash ; \
 	fi
 
-tag: ## Tag IMAGE_NAME in the container registry
-	@$(DOCKER) history -q $(LOCAL_IMAGE) 2> /dev/null >&2 || $(MAKE) -C $(PROJECT_PATH) -f $(MKFILE_PATH) build
+tag: ensure-build ## Tag IMAGE_NAME in the container registry
 	$(DOCKER) tag $(LOCAL_IMAGE) $(REMOTE_IMAGE)
 
 push: tag ## Push to the container registry
