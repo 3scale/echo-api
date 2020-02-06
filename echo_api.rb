@@ -2,6 +2,10 @@
 
 # shotgun app.rb -p 9294
 
+module EchoAPI
+  VERSION = '1.0.0'.freeze
+end
+
 require 'sinatra'
 require 'json'
 require 'nokogiri'
@@ -43,6 +47,13 @@ use Rack::Cors do
       head options get post patch put delete
     ]
   end
+end
+
+ECHO_API_VERSION = (ENV['ECHO_API_BANNER'] ||
+                    "echo-api/#{EchoAPI::VERSION}").freeze
+
+after do
+  headers['X-3scale-Echo-API'] = ECHO_API_VERSION
 end
 
 def all_methods(path, opts = {}, &block)
