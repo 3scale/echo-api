@@ -2,9 +2,9 @@
 
 source 'https://rubygems.org'
 
-gem 'nokogiri', '1.10.7'
+gem 'nokogiri', '~> 1'
 gem 'puma'
-gem 'rack', '2.0.8'
+gem 'rack', '~> 2'
 gem 'rack-cors', require: 'rack/cors'
 gem 'sinatra'
 
