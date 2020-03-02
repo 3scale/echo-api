@@ -13,7 +13,7 @@ ARG RUNTIME_DEPS="ruby"
 # TODO: microdnf currently contains a nasty bug in which using --nodocs or --setopt=tsflags=nodocs fails
 RUN echo -e "[ruby]\nname=ruby\nstream=${RUBY_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/ruby.module \
   && microdnf update \
-  && microdnf install ${RUNTIME_DEPS} \
+  && microdnf install --nodocs ${RUNTIME_DEPS} \
   && gem install -N bundler -v "= ${BUNDLER_VERSION}" \
   && chown -R 1001:1001 "${HOME}"
 
