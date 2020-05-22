@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: echo-api
-        image: quay.io/3scale/echoapi:master
+        image: quay.io/3scale/echoapi:stable
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9292
