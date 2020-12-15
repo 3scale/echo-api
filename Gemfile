@@ -11,10 +11,8 @@ gem 'sinatra'
 gem 'json'
 
 # Opentracing
-gem 'jaeger-client', '~> 1'
-gem 'opentracing', '~> 0.5'
-gem 'rack-tracer', '0.9.0'
-gem 'spanmanager', '= 0.3.0'
+gem 'jaeger-client', '~> 1', require: nil
+gem 'rack-tracer', '~> 0.9', require: nil
 
 group :development do
   gem 'shotgun'

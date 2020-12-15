@@ -6,14 +6,13 @@ EXPOSE 9292
 ENV HOME=/home
 WORKDIR "${HOME}/app"
 
-ARG RUBY_VERSION="2.6"
-ARG BUNDLER_VERSION="2.1.4"
+ARG RUBY_VERSION="2.7"
+ARG BUNDLER_VERSION="2.2.1"
 ARG RUNTIME_DEPS="ruby"
 
-# TODO: microdnf currently contains a nasty bug in which using --nodocs or --setopt=tsflags=nodocs fails
 RUN echo -e "[ruby]\nname=ruby\nstream=${RUBY_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/ruby.module \
-  && microdnf update \
-  && microdnf install ${RUNTIME_DEPS} \
+  && microdnf update --nodocs \
+  && microdnf install --nodocs ${RUNTIME_DEPS} \
   && gem install -N bundler -v "= ${BUNDLER_VERSION}" \
   && chown -R 1001:1001 "${HOME}"
 
@@ -22,7 +21,7 @@ FROM base AS builder-base
 
 ARG BUILD_DEPS="tar make file findutils git patch gcc automake autoconf libtool redhat-rpm-config openssl-devel ruby-devel"
 
-RUN microdnf install ${BUILD_DEPS}
+RUN microdnf install --nodocs ${BUILD_DEPS}
 
 COPY --chown=1001:1001 ./Gemfile* "${HOME}/app/"
 
@@ -57,7 +56,7 @@ FROM builder-base AS dev
 USER root
 
 ARG DEV_TOOLS="vim gdb"
-RUN microdnf install ${DEV_TOOLS}
+RUN microdnf install --nodocs ${DEV_TOOLS}
 
 ARG DEV_UID=1001
 ARG DEV_GID=1001
