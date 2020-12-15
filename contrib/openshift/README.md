@@ -45,7 +45,7 @@ oc new-project echo-api
 - Create the template:
 
 ```
-oc new-app -f echo-api-template.yml --param ECHOAPI_HOST=<a-hostname-for-echo-api-route>
+oc new-app -f contrib/openshift/echo-api-template.yml --param ECHOAPI_HOST=<a-hostname-for-echo-api-route>
 ```
 
 - Check status:
@@ -66,7 +66,7 @@ oc adm policy add-scc-to-user anyuid -z default -n <your-namespace>
 oc adm policy add-scc-to-user privileged -z default -n <your-namespace>
 
 # Deploy the application and associated resources
-oc create -f istio/ -n <your-namespace>
+oc create -f contrib/istio/ -n <your-namespace>
 
 # Set the ingress-gateway as a variable
 export GW=$(oc get route istio-ingressgateway -n istio-system -o go-template='http://{{ .spec.host }}')
