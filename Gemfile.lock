@@ -4,7 +4,7 @@ GEM
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
-    json (2.3.1)
+    json (2.4.0)
     mini_portile2 (2.4.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
@@ -31,11 +31,12 @@ GEM
       tilt (~> 2.0)
     spanmanager (0.3.0)
       opentracing
-    thrift (0.11.0.0)
+    thrift (0.13.0)
     tilt (2.0.10)
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   jaeger-client (~> 1)
@@ -51,4 +52,4 @@ DEPENDENCIES
   spanmanager (= 0.3.0)
 
 BUNDLED WITH
-   2.1.4
+   2.2.1
