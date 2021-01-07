@@ -7,7 +7,7 @@ ENV HOME=/home
 WORKDIR "${HOME}/app"
 
 ARG RUBY_VERSION="2.7"
-ARG BUNDLER_VERSION="2.2.1"
+ARG BUNDLER_VERSION="2.2.4"
 ARG RUNTIME_DEPS="ruby"
 
 RUN echo -e "[ruby]\nname=ruby\nstream=${RUBY_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/ruby.module \
