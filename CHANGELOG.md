@@ -2,6 +2,20 @@
 
 Notable changes to echo-api will be tracked in this document.
 
+## 1.0.3 - 2021-01-08
+
+### Added
+
+- Sample manifests for deploying on Kubernetes with and without Jaeger have been added to the `contrib/kubernetes` directory.
+
+### Fixed
+
+- Updated Bundler to 2.2.4. This should fix issues running the app on OpenShift.
+
+### Changed
+
+- Updated gems for Nokogiri to 1.11.1 and json to 2.5.1.
+
 ## 1.0.2 - 2020-12-15
 
 ### Added
