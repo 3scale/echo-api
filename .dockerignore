@@ -5,8 +5,7 @@
 ./.circleci
 ./Makefile
 ./Dockerfile
-./istio
-./openshift
+./contrib
 ./*.md
 ./LICENSE
 ./NOTICE

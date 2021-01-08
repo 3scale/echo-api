@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: echo-api
+    spec:
+      containers:
+        - name: echo-api
+          image: quay.io/3scale/echoapi:stable
+          envFrom:
+            - configMapRef:
+                name: echo-api-jaeger
+          livenessProbe:
+            tcpSocket:
+              port: 9292 
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /test/200 
+              port: 9292 
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 9292 
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-api
+spec:
+  ports:
+  - name: echo-api-port
+    port: 9292
+    protocol: TCP
+    targetPort: 9292
+  selector:
+    app: echo-api
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: echo-api-jaeger
+data:
+  JAEGER_AGENT_HOST: jaeger-agent
+  JAEGER_AGENT_PORT: "6831"
+  JAEGER_SERVICE_NAME: echo-api
+  OPENTRACING_TRACER: jaeger
+---
