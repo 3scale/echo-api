@@ -1,0 +1,13 @@
+language: ruby
+dist: bionic
+arch: ppc64le
+os: linux
+
+before_install:
+  - .travis/setup_${TRAVIS_CPU_ARCH}_env.sh
+
+install:
+  - .travis/install_${TRAVIS_CPU_ARCH}_env.sh
+
+script:
+  - .travis/build_${TRAVIS_CPU_ARCH}.sh
