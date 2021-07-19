@@ -37,6 +37,7 @@ GEM
     tilt (2.0.10)
 
 PLATFORMS
+  powerpc64le-linux
   ruby
   x86_64-linux
 
