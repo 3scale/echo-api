@@ -2,6 +2,22 @@
 
 Notable changes to echo-api will be tracked in this document.
 
+## 1.0.4 - 2021-09-21
+
+### Added
+
+- ppc64le builds are now executed on Travis.
+
+### Changed
+
+- Updated gems for Nokogiri to 1.12.4 and Puma to 5.5.0.
+- Updated transitive dependencies.
+- Updated Bundler to 2.2.27.
+
+### Removed
+
+- The OpenAPI specification has been removed as it was unmaintained.
+
 ## 1.0.3 - 2021-01-08
 
 ### Added
