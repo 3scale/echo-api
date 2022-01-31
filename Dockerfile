@@ -7,12 +7,13 @@ ENV HOME=/home
 WORKDIR "${HOME}/app"
 
 ARG RUBY_VERSION="2.7"
-ARG BUNDLER_VERSION="2.3.4"
+ARG BUNDLER_VERSION="2.3.6"
 ARG RUNTIME_DEPS="ruby"
 
 RUN echo -e "[ruby]\nname=ruby\nstream=${RUBY_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/ruby.module \
   && microdnf update --nodocs \
   && microdnf install --nodocs ${RUNTIME_DEPS} \
+  && rm -rf /var/cache/yum /var/cache/dnf \
   && gem install -N bundler -v "= ${BUNDLER_VERSION}" \
   && chown -R 1001:1001 "${HOME}"
 
@@ -21,7 +22,8 @@ FROM base AS builder-base
 
 ARG BUILD_DEPS="tar make file findutils git patch gcc automake autoconf libtool redhat-rpm-config openssl-devel ruby-devel"
 
-RUN microdnf install --nodocs ${BUILD_DEPS}
+RUN microdnf install --nodocs ${BUILD_DEPS} \
+  && rm -rf /var/cache/yum /var/cache/dnf
 
 COPY --chown=1001:1001 ./Gemfile* "${HOME}/app/"
 
@@ -56,7 +58,8 @@ FROM builder-base AS dev
 USER root
 
 ARG DEV_TOOLS="vim gdb"
-RUN microdnf install --nodocs ${DEV_TOOLS}
+RUN microdnf install --nodocs ${DEV_TOOLS} \
+  && rm -rf /var/cache/yum /var/cache/dnf
 
 ARG DEV_UID=1001
 ARG DEV_GID=1001
