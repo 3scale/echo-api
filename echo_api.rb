@@ -3,7 +3,7 @@
 # shotgun app.rb -p 9294
 
 module EchoAPI
-  VERSION = '1.0.4'.freeze
+  VERSION = '1.0.5'.freeze
 end
 
 require 'sinatra'
