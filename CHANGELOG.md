@@ -2,6 +2,13 @@
 
 Notable changes to echo-api will be tracked in this document.
 
+## 1.0.5 - 2022-01-31
+
+### Changed
+
+- Updated gems: Bundler 2.3.6, Nokogiri 1.13.1, Puma 5.6.1, json 5.6.1,
+  jaeger-client 1.2.0.
+
 ## 1.0.4 - 2021-09-21
 
 ### Added
