@@ -3,16 +3,13 @@
 # shotgun app.rb -p 9294
 
 module EchoAPI
-  VERSION = '1.0.5'.freeze
+  VERSION = '1.1.0'.freeze
 end
 
-require 'sinatra'
-require 'json'
-require 'nokogiri'
-require 'digest/sha1'
-require 'securerandom'
-require 'base64'
-require 'rack/cors'
+require 'rubygems'
+require 'bundler'
+
+Bundler.require
 
 enable :logging
 set :protection, except: [:json_csrf]
@@ -23,20 +20,28 @@ configure do
   enable :static
 end
 
-case ENV['OPENTRACING_TRACER']
-when 'jaeger'
-  require 'jaeger/client'
-  require 'rack/tracer'
 
-  jaeger_agent_host = ENV['JAEGER_AGENT_HOST'] || '127.0.0.1'
-  jaeger_agent_port = ENV['JAEGER_AGENT_PORT'] || 6831
-  jaeger_service_name = ENV['JAEGER_SERVICE_NAME'] || 'echo-api'
-  jaeger_client = Jaeger::Client.build(host: jaeger_agent_host,
-                                       port: jaeger_agent_port,
-                                       service_name: jaeger_service_name,
-                                       flush_interval: 1)
+telemetry_exporter = ENV['OTEL_TRACES_EXPORTER'] || ENV['OPENTRACING_TRACER']
+if telemetry_exporter
+  telemetry_exporter = 'otlp' if telemetry_exporter == 'jaeger'
 
-  use ::Rack::Tracer, tracer: jaeger_client
+  ENV['OTEL_TRACES_EXPORTER'] = telemetry_exporter
+  require 'opentelemetry/sdk'
+  unless telemetry_exporter == 'console'
+    host = ENV['JAEGER_AGENT_HOST'] || '127.0.0.1'
+    port = ENV['JAEGER_AGENT_PORT']
+    port ||= telemetry_exporter == 'zipkin' ? 6831 : 4318
+    ENV['OTEL_EXPORTER_OTLP_ENDPOINT'] ||= "http://#{host}:#{port}"
+    require "opentelemetry/exporter/#{telemetry_exporter}"
+  end
+
+  require 'opentelemetry/instrumentation/sinatra'
+
+  OpenTelemetry::SDK.configure do |c|
+    c.service_name = ENV['OTEL_SERVICE_NAME'] || ENV['JAEGER_SERVICE_NAME'] || 'echo-api'
+
+    c.use 'OpenTelemetry::Instrumentation::Sinatra'
+  end
 end
 
 # Enabling CORS
