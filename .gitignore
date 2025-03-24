@@ -3,6 +3,7 @@
 .bundle
 .config
 coverage
+.tool-versions
 InstalledFiles
 lib/bundler/man
 pkg

@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: Bundle Install
-          command: gem install -N bundler && (bundle check || bundle install)
+          command: gem install -N bundler -v 2.4.22 && (bundle check || bundle install)
 
       - save_cache:
           key: echo-api-v1-bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
@@ -47,5 +47,6 @@ jobs:
           name: Verify OpenTracing
           command: |
             sleep 1 # that is the flush timeout
-            curl http://localhost:16686/api/services/echo-api/operations | jq '(.data | length) > 0' --exit-status
+            curl -sS http://localhost:16686/api/services/echo-api/operations | tee operations.out
+            jq '(.data | length) > 0' --exit-status < operations.out
 
