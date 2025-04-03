@@ -6,7 +6,7 @@ gem 'nokogiri', '~> 1'
 gem 'puma'
 gem 'rack', '~> 3'
 gem 'rack-cors', require: 'rack/cors'
-gem "rackup", "~> 2.2"
+gem 'rackup', '~> 2.2'
 gem 'sinatra', '~> 4'
 
 gem 'json'
