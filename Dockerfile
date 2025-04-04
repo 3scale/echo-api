@@ -41,7 +41,6 @@ COPY --chown=1001:1001 ./ "${HOME}/app/"
 
 # Runtime image
 FROM base AS production
-MAINTAINER Alejandro Martinez Ruiz <amr@redhat.com>
 
 USER 1001:1001
 
