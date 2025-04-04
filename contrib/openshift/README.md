@@ -6,7 +6,7 @@ You can use two different backend templates:
 * I just need an echo-api deployed: echo-api-template.yml (uses prebuilt docker images)
 * I want to modify/devel echo-api:
 	1. Go to ../
-	2. Make your changes on the aplication files (app.json, config.ru, echo_api.rb).
+	2. Make your changes on the application files (app.json, config.ru, echo_api.rb).
 	3. make update
 
 ## Downloading the CLI
