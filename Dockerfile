@@ -1,18 +1,17 @@
 # Common base image
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS base
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS base
 
 EXPOSE 9292
 
 ENV HOME=/home
 WORKDIR "${HOME}/app"
 
-ARG RUBY_VERSION="2.7"
-ARG BUNDLER_VERSION="2.3.6"
+ARG RUBY_VERSION="3.3"
+ARG BUNDLER_VERSION="2.6.6"
 ARG RUNTIME_DEPS="ruby"
 
 RUN echo -e "[ruby]\nname=ruby\nstream=${RUBY_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/ruby.module \
-  && microdnf update --nodocs \
-  && microdnf install --nodocs ${RUNTIME_DEPS} \
+  && microdnf install -y --nodocs ${RUNTIME_DEPS} \
   && rm -rf /var/cache/yum /var/cache/dnf \
   && gem install -N bundler -v "= ${BUNDLER_VERSION}" \
   && chown -R 1001:1001 "${HOME}"
@@ -22,7 +21,7 @@ FROM base AS builder-base
 
 ARG BUILD_DEPS="tar make file findutils git patch gcc automake autoconf libtool redhat-rpm-config openssl-devel ruby-devel"
 
-RUN microdnf install --nodocs ${BUILD_DEPS} \
+RUN microdnf install -y --nodocs ${BUILD_DEPS} \
   && rm -rf /var/cache/yum /var/cache/dnf
 
 COPY --chown=1001:1001 ./Gemfile* "${HOME}/app/"
@@ -58,7 +57,7 @@ FROM builder-base AS dev
 USER root
 
 ARG DEV_TOOLS="vim gdb"
-RUN microdnf install --nodocs ${DEV_TOOLS} \
+RUN microdnf install -y --nodocs ${DEV_TOOLS} \
   && rm -rf /var/cache/yum /var/cache/dnf
 
 ARG DEV_UID=1001
