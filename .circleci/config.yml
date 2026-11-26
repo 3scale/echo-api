@@ -28,14 +28,7 @@ jobs:
 
       - run:
           name: Bundle Install
-          command: |
-            # Install exactly the Bundler the lockfile was generated with.
-            # A bare `gem install bundler` picks up the newest release on the
-            # image (4.x), which then tries to swap itself for the locked
-            # version, fails, and falls back with a warning.
-            bundler_version="$(awk '/^BUNDLED WITH/{getline; gsub(/[[:space:]]/, ""); print}' Gemfile.lock)"
-            gem install -N bundler -v "${bundler_version}"
-            bundle check || bundle install
+          command: bundle check || bundle install
 
       - save_cache:
           key: echo-api-v1-bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
