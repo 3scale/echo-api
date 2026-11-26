@@ -12,8 +12,8 @@ gem 'sinatra', '~> 4'
 gem 'json'
 
 # Opentracing
-gem 'opentelemetry-instrumentation-rack', '~> 0.22', require: false
-gem 'opentelemetry-instrumentation-sinatra', '~> 0.22', require: false
+gem 'opentelemetry-instrumentation-rack', '~> 0.32', require: false
+gem 'opentelemetry-instrumentation-sinatra', '~> 0.31', require: false
 gem 'opentelemetry-exporter-otlp', require: false
 gem 'opentelemetry-exporter-zipkin', require: false
 

@@ -1,17 +1,24 @@
-version: 2
+version: 2.1
+
+# CircleCI stopped accepting version 2.0 configs on 2026-09-21; v2.1 is the only
+# supported format. The job is unchanged apart from:
+#   - an explicit workflow, which v2.1 no longer implies for a bare job list
+#   - environment values quoted, as the v2.1 schema expects strings
+# See https://discuss.circleci.com/t/54719
+
 jobs:
   build:
     working_directory: /home/circleci/echo-api
     docker:
       - image: cimg/ruby:3.3
         environment:
-          BUNDLE_RETRY: 3
+          BUNDLE_RETRY: "3"
           BUNDLE_PATH: vendor/bundle
           OPENTRACING_TRACER: jaeger
-          BUNDLE_FROZEN: true # --deployment
+          BUNDLE_FROZEN: "true" # --deployment
       - image: quay.io/jaegertracing/jaeger:2.4.0
         environment:
-          COLLECTOR_OTLP_ENABLED: 1
+          COLLECTOR_OTLP_ENABLED: "1"
     steps:
       - checkout
 
@@ -21,7 +28,7 @@ jobs:
 
       - run:
           name: Bundle Install
-          command: gem install -N bundler && (bundle check || bundle install)
+          command: bundle check || bundle install
 
       - save_cache:
           key: echo-api-v1-bundle-{{ arch }}-{{ checksum "Gemfile.lock" }}
@@ -50,3 +57,7 @@ jobs:
             curl -sS http://localhost:16686/api/services/echo-api/operations | tee operations.out
             jq '(.data | length) > 0' --exit-status < operations.out
 
+workflows:
+  build:
+    jobs:
+      - build

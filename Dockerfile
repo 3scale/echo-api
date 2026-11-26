@@ -6,9 +6,14 @@ EXPOSE 9292
 ENV HOME=/home
 WORKDIR "${HOME}/app"
 
-ARG RUBY_VERSION="3.3"
-ARG BUNDLER_VERSION="2.6.6"
-ARG RUNTIME_DEPS="ruby"
+# NOTE: keep these ARG defaults unquoted. Buildah leaks build args into the
+# environment of every descendant stage verbatim, so a quoted default such as
+# ARG BUNDLER_VERSION="2.6.6" reaches later stages as the literal value
+# `"2.6.6"` (quotes included) and makes `bundle` abort with
+# "Malformed version number string \"2.6.6\"".
+ARG RUBY_VERSION=3.3
+ARG BUNDLER_VERSION=2.6.6
+ARG RUNTIME_DEPS=ruby
 
 RUN echo -e "[ruby]\nname=ruby\nstream=${RUBY_VERSION}\nprofiles=\nstate=enabled\n" > /etc/dnf/modules.d/ruby.module \
   && microdnf install -y --nodocs ${RUNTIME_DEPS} \
@@ -39,17 +44,6 @@ FROM builder-with-gems AS builder
 # Copy sources
 COPY --chown=1001:1001 ./ "${HOME}/app/"
 
-# Runtime image
-FROM base AS production
-
-USER 1001:1001
-
-# Copy over the whole bundle
-COPY --chown=1001:1001 --from=builder "${HOME}/" "${HOME}/"
-
-ENV RACK_ENV="production"
-CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0"]
-
 # Development image
 FROM builder-base AS dev
 
@@ -74,4 +68,20 @@ RUN bundle config --global with 'test development' \
   && bundle install
 
 CMD ["/bin/bash"]
+
+# Runtime image.
+#
+# This MUST stay the last stage in the file: a build without --target
+# produces the last stage, and that is what the registry build triggers run
+# (they have no way to select a target). While the dev stage came last, every
+# triggered build published a shell-only development image under a release tag.
+FROM base AS production
+
+USER 1001:1001
+
+# Copy over the whole bundle
+COPY --chown=1001:1001 --from=builder "${HOME}/" "${HOME}/"
+
+ENV RACK_ENV="production"
+CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0"]
 
