@@ -3,7 +3,7 @@
 # shotgun app.rb -p 9294
 
 module EchoAPI
-  VERSION = '1.1.0'.freeze
+  VERSION = '1.1.1'.freeze
 end
 
 require 'rubygems'
